@@ -1,0 +1,67 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: fresh-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/community_fresh?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.fresh.modules.*.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# JWT 双体系配置：用户端 / 管理端
+fresh:
+  jwt:
+    # 管理端
+    admin-secret-key: YWRtaW4tZnJlc2gtc2VjcmV0LWtleS0yMDI2LWNvbW11bml0eQ==
+    admin-ttl: 86400000
+    admin-token-name: Authorization
+    # 用户端
+    user-secret-key: dXNlci1mcmVzaC1zZWNyZXQta2V5LTIwMjYtY29tbXVuaXR5
+    user-ttl: 604800000
+    user-token-name: Authorization
+  # 本地文件上传目录
+  upload-path: ./upload/
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 1.用户端接口
+      paths-to-match: /user/**
+    - group: 2.管理端接口
+      paths-to-match: /admin/**
+
+logging:
+  level:
+    com.fresh: info

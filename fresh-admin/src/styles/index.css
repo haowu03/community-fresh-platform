@@ -1,0 +1,41 @@
+/* 全局基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+}
+
+/* 页面通用容器 */
+.page-container {
+  padding: 16px;
+}
+
+/* 搜索栏卡片 */
+.search-card {
+  margin-bottom: 16px;
+}
+
+/* 表格卡片 */
+.table-card {
+  margin-bottom: 16px;
+}
+
+/* 分页条靠右 */
+.pager-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* 库存预警红字 */
+.stock-warn {
+  color: #f56c6c;
+  font-weight: bold;
+}

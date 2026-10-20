@@ -1,0 +1,100 @@
+/* 全局样式 */
+
+/* 主题色：生鲜绿（覆盖 Vant CSS 变量） */
+:root {
+  --van-primary-color: #39b57f;
+  --van-success-color: #39b57f;
+  --van-nav-bar-icon-color: #39b57f;
+  --van-tabbar-item-active-color: #39b57f;
+  --van-tabbar-item-active-background: transparent;
+}
+
+body {
+  margin: 0;
+  /* 桌面端外层深灰背景，衬托中间"手机"容器 */
+  background: #e8eaee;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, sans-serif;
+}
+
+/* 桌面端容器约束：手机 App 跑在网页里的效果 */
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #f5f6f8;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+/* fixed 定位元素同步约束宽度（translate 属性独立于 transform，不影响弹层动画） */
+.van-tabbar,
+.van-nav-bar--fixed,
+.van-submit-bar,
+.van-action-bar,
+.van-popup--bottom {
+  left: 50% !important;
+  right: auto !important;
+  translate: -50% 0;
+  width: 100%;
+  max-width: 480px;
+}
+
+.page {
+  min-height: 100vh;
+  background: #f5f6f8;
+}
+
+/* 价格通用样式 */
+.price {
+  color: #ee0a24;
+  font-weight: bold;
+}
+
+.price-del {
+  color: #999;
+  font-size: 12px;
+  text-decoration: line-through;
+  margin-left: 4px;
+}
+
+/* 卡片通用：统一圆角 + 轻阴影 */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  margin: 10px 12px;
+  padding: 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* 区块小标题：绿色竖条 */
+.sec-title {
+  position: relative;
+  padding-left: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.sec-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 3px;
+  bottom: 3px;
+  width: 4px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #39b57f, #27a06c);
+}
+
+/* 多行省略 */
+.ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 底部操作区占位 */
+.bottom-placeholder {
+  height: 60px;
+}

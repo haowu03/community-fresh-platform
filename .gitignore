@@ -1,0 +1,38 @@
+# ========== 后端 Java ==========
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+
+# ========== 前端 Node ==========
+node_modules/
+dist/
+*.local
+
+# ========== IDE ==========
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# ========== 日志与临时文件 ==========
+*.log
+logs/
+*.tmp
+
+# ========== 系统文件 ==========
+.DS_Store
+Thumbs.db
+
+# ========== 中间件（不入库，需自行安装） ==========
+redis/
+mysql/
+
+# 说明：upload/ 目录为演示商品图片（demo SQL 引用），保留入库；
+# fresh-server/upload/ 是早期残留的占位图目录（后端实际使用项目根 upload/），不入库
+fresh-server/upload/
+# 若不想上传商品图，可取消下一行注释
+# upload/

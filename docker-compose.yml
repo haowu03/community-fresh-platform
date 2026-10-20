@@ -1,0 +1,35 @@
+version: "3.8"
+
+# 一键启动项目依赖的中间件：MySQL 8 + Redis
+# 用法：docker compose up -d
+# 首次启动 MySQL 会自动执行 sql/community_fresh.sql 建库建表
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fresh-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # 首次初始化自动执行（仅数据卷为空时生效）
+      - ./sql/community_fresh.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./sql/demo-data.sql:/docker-entrypoint-initdb.d/02-demo.sql:ro
+      - ./sql/demo-data2.sql:/docker-entrypoint-initdb.d/03-demo2.sql:ro
+
+  redis:
+    image: redis:7-alpine
+    container_name: fresh-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  mysql-data:
+  redis-data:
