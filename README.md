@@ -1,98 +1,133 @@
 # 社区便民生鲜配送平台
 
-面向社区场景的生鲜电商系统，解决社区生鲜"最后一公里"问题。前后端分离架构，包含**管理端 PC 后台**与**用户端移动 H5** 两套独立前端。
+面向社区生鲜"最后一公里"场景的电商系统。前后端分离架构，包含**管理端 PC 后台**与**用户端移动 H5** 两套独立前端、一套 Spring Boot 后端，覆盖从商品上架、批次入库到下单履约、售后评价的完整业务闭环。
 
-相比普通外卖，生鲜具有保质期短、冷链要求、按重量计价、损耗高、产地溯源等业务特性，本项目衍生出社区自提、预售采摘、临期特价、社区团购等差异化玩法。
+针对生鲜"保质期短、按重量计价、损耗高"的行业特性，衍生出**社区自提、预售采摘、临期特价、社区团购、产地溯源**等差异化玩法，并重点解决了**高并发下单防超卖**与**生鲜批次损耗控制**两大核心难题。
+
+## 技术架构
+
+```mermaid
+graph TB
+    subgraph 前端
+        A[管理端后台<br/>Vue3 + Element Plus + ECharts]
+        B[用户端移动 H5<br/>Vue3 + Vant4]
+    end
+
+    subgraph 后端 Spring Boot 3
+        C[JWT 双密钥认证<br/>用户端/管理端拦截器]
+        D[订单/购物车<br/>乐观锁 + Redis 防重锁]
+        E[商品/批次<br/>FEFO + 临期自动折扣]
+        F[预售 / 社区团购<br/>定时结算自动退款]
+        G[社区/评价/报表]
+        H[定时任务<br/>超时关单·临期扫描·预售关闭·团购结算]
+    end
+
+    I[(MySQL 8)]
+    J[(Redis 7)]
+
+    A --> C --> D
+    B --> C
+    D --> I
+    D --> J
+    E --> I
+    E --> J
+    F --> I
+    H --> I
+    H --> J
+    G --> I
+```
 
 ## 技术栈
 
-**后端**
-- Java 17+ / Spring Boot 3 / MyBatis-Plus / MySQL 8 / Redis（Lettuce）
-- JWT 双体系认证（用户端 / 管理端双密钥）+ BCrypt 密码加密
-- Knife4j 接口文档（http://localhost:8080/doc.html）
-- 定时任务：超时关单、批次临期/过期扫描、预售关闭、团购结算
-
-**前端**
-- 管理端：Vue3 + Element Plus + ECharts（PC 后台）
-- 用户端：Vue3 + Vant 4（移动端 H5）
-
-## 核心功能
-
-| 模块 | 说明 |
+| 层 | 技术 |
 |---|---|
-| 商品浏览 | 分类筛选、搜索、Redis 缓存（Cache Aside 模式） |
-| 称重购买 | 蔬果鲜肉按重量选购（0.5 斤步进+快捷重量），鱼类/整盒商品按数量整卖 |
-| 批次管理 | 批次入库（生产日期+保质期自动算到期日）、FEFO 先到期先出 |
-| 临期特价 | 定时扫描批次，临期自动 7 折、过期作废 |
-| 双履约 | 配送到家 / 社区自提（自提点+时间段+6 位自提码核销） |
-| 预售采摘 | 预售下单、到点自动关闭、发货日集中履约 |
-| 社区团购 | 团长发起、满员成团、到期流团自动退款、团长后台 |
-| 库存防超卖 | 乐观锁 SQL（`stock >= ?`）+ Redis 下单防重锁 |
-| 溯源 | 产地 / 种植户 / 种植采摘日期 / 检测报告 |
-| 社区 | 发帖（管理员审核）、评论、点赞 |
+| 后端 | Java 17 · Spring Boot 3.2 · MyBatis-Plus · MySQL 8 · Redis 7（Lettuce）· Knife4j |
+| 安全 | JWT 双密钥体系（用户端/管理端独立密钥与有效期）· BCrypt 密码加密 · ThreadLocal 上下文 |
+| 管理端 | Vue3 · Element Plus · ECharts（数据工作台多维度报表） |
+| 用户端 | Vue3 · Vant4 移动 H5 · Pinia（多端 H5 适配移动端 UI 规范） |
+| 工程化 | Maven · Vite · 单元测试（JUnit5 + Mockito）· Docker Compose 全链路部署 |
+
+## 核心亮点
+
+| 难点 | 解决方案 |
+|---|---|
+| **高并发下单防超卖** | 数据库层乐观锁（`UPDATE ... SET stock=stock-? WHERE stock>=?`，按受影响行数判断）+ Redis `SETNX` 10 秒防重锁拦截重复提交，双重保障 |
+| **生鲜损耗控制** | 批次入库时由生产日期+保质期自动计算到期日；下单按 **FEFO（先到期先出）** 顺序扣减批次库存；每日定时扫描，临期批次自动 7 折、过期批次作废并计入损耗报表 |
+| **双履约链路** | 配送到家（地址三要素校验）与社区自提（自提点+时间段预约，乐观占用名额，6 位自提码核销）一套订单模型统一流转 |
+| **团购状态机** | 发起→满员成团（支付时原子判断）→定时结算：未满员自动流团、批量退款并逐一通知；参团唯一约束兜底防重复 |
+| **缓存一致性** | 商品列表/详情 Cache Aside 模式；库存、临期列表在写入路径主动失效，避免脏读 |
+| **双端认证隔离** | 用户端 7 天 / 管理端 1 天独立 JWT 密钥，拦截器 + ThreadLocal 传递登录态，防止越权 |
+
+> 每处亮点的核心逻辑均有单元测试覆盖（21 个用例，`mvn test` 全绿），详见 `fresh-server/src/test`。
 
 ## 项目结构
 
 ```
-delivery platform/
-├── fresh-server/          # 后端（Spring Boot 3）
-├── fresh-admin/           # 管理端前端（Vue3 + Element Plus）
-├── fresh-user/            # 用户端前端（Vue3 + Vant）
-├── sql/                   # 建库建表 + 演示数据脚本
-│   ├── community_fresh.sql    # 20 张表 DDL + 基础种子数据
-│   ├── demo-data.sql          # 演示数据（商品/批次/预售/团购/帖子）
-│   └── demo-data2.sql         # 扩展演示数据（历史订单/评论等）
-├── upload/                # 商品演示图片（demo SQL 引用）
-├── docs/                  # 需求/流程/数据库/接口/运行指南文档
-├── docker-compose.yml     # MySQL + Redis 一键启动（可选）
+community-fresh-platform/
+├── fresh-server/          # 后端（Spring Boot 3，模块化：user/product/order/presale/groupbuy/...）
+├── fresh-admin/           # 管理端 PC 后台（Vue3 + Element Plus + ECharts）
+├── fresh-user/            # 用户端移动 H5（Vue3 + Vant4）
+├── sql/                   # 20 张表 DDL + 演示数据（商品/批次/预售/团购/订单）
+├── upload/                # 商品演示图片
+├── docs/                  # 需求 / 业务流程 / 数据库 / 接口 / 运行指南
+├── docker-compose.yml     # 全链路一键部署（MySQL + Redis + 三端应用）
 └── start_fresh_front.bat  # 本地一键启动两套前端
 ```
 
 ## 快速开始
 
-### 环境依赖
-本项目需要自行安装以下中间件（不会包含在代码仓库内）
-1. MySQL8.0
-2. Redis（Windows解压版，下载地址：`https://github.com/tporadowski/redis/releases`）
+### 方式一：Docker 一键部署（推荐）
 
-### Redis启动
-1. 本地解压Redis到任意目录
-2. 执行 redis-server.exe 启动服务（窗口保持打开）
-3. 使用 redis-cli ping 验证，返回PONG即成功
-
-> 有 Docker 的话也可以直接 `docker compose up -d` 一键启动 MySQL 8 + Redis（首次自动执行 sql 初始化脚本）。
-
-### 1. 初始化数据库
 ```bash
+docker compose up -d --build
+```
+
+| 入口 | 地址 | 演示账号 |
+|---|---|---|
+| 管理端后台 | http://localhost:5173 | admin / 123456 |
+| 用户端 H5 | http://localhost:5174 | user1 / 123456（团长：leader1 / 123456） |
+| 接口文档 | http://localhost:8080/doc.html | - |
+
+首次启动自动执行建库建表与演示数据脚本；商品图片与数据库数据持久化在 Docker 卷中。
+
+### 方式二：本地开发
+
+**依赖**：JDK 17+ / Node 20+ / MySQL 8 / Redis（也可仅用 `docker compose up -d mysql redis` 起中间件）
+
+```bash
+# 1. 初始化数据库
 mysql -uroot -p123456 < sql/community_fresh.sql
 mysql -uroot -p123456 community_fresh < sql/demo-data.sql
 mysql -uroot -p123456 community_fresh < sql/demo-data2.sql
+
+# 2. 启动后端（IDEA 运行 com.fresh.FreshApplication，端口 8080）
+#    数据库/Redis 连接在 fresh-server/src/main/resources/application.yml 中修改
+
+# 3. 启动前端（或双击 start_fresh_front.bat）
+cd fresh-admin && npm install && npm run dev   # http://localhost:5173
+cd fresh-user  && npm install && npm run dev   # http://localhost:5174
 ```
 
-### 2. 启动后端
-IDEA 打开 `fresh-server`，运行 `com.fresh.FreshApplication`（端口 8080）。
-数据库账号密码在 `fresh-server/src/main/resources/application.yml` 中修改（默认 root / 123456）。
+## 测试
 
-### 3. 启动前端
-双击 `start_fresh_front.bat`，或分别执行：
 ```bash
-cd fresh-admin && npm install && npm run dev   # 管理端 http://localhost:5173
-cd fresh-user  && npm install && npm run dev   # 用户端 http://localhost:5174
+cd fresh-server && mvn test
 ```
 
-### 演示账号
-
-| 端 | 账号 | 密码 | 角色 |
-|---|---|---|---|
-| 管理端 | admin | 123456 | 平台管理员 |
-| 用户端 | user1 | 123456 | 普通用户 |
-| 用户端 | leader1 | 123456 | 团长（绑定自提点） |
+覆盖核心业务逻辑：团购成团/流团退款结算、临期批次扫描与自动折扣、下单防重锁、自提码核销权限校验、超时关单、批次入库到期日计算等，共 21 个用例。
 
 ## 文档
 
-详细设计文档见 `docs/` 目录：
 - [01-需求文档](docs/01-需求文档.md)
 - [02-业务流程](docs/02-业务流程.md)
 - [03-数据库设计](docs/03-数据库设计.md)
 - [04-后端模块划分与接口文档](docs/04-后端模块划分与接口文档.md)
-- [05-使用教程与启动指南](docs/05-运行指南.md)
+- [05-运行指南](docs/05-运行指南.md)
+
+## Roadmap
+
+- [ ] JMeter 压测报告：下单接口 QPS 与防超卖数据沉淀
+- [ ] 超时关单由定时轮询演进为 RabbitMQ 延迟消息（削峰 + 精确到期）
+- [ ] Redis 防重锁演进为 Redisson 分布式锁（可重入 + 看门狗续期）
+- [ ] 管理端 WebSocket 推送新订单/催单提醒
+- [ ] CI：GitHub Actions 自动构建与测试
