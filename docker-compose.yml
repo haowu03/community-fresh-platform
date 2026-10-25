@@ -1,5 +1,3 @@
-version: "3.8"
-
 # 一键启动整套系统：MySQL 8 + Redis + 后端 + 管理端 + 用户端
 # 用法：docker compose up -d --build
 #   - 管理端后台  http://localhost:5173  （admin / 123456）
