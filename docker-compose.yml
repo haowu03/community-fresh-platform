@@ -1,8 +1,11 @@
 version: "3.8"
 
-# 一键启动项目依赖的中间件：MySQL 8 + Redis
-# 用法：docker compose up -d
-# 首次启动 MySQL 会自动执行 sql/community_fresh.sql 建库建表
+# 一键启动整套系统：MySQL 8 + Redis + 后端 + 管理端 + 用户端
+# 用法：docker compose up -d --build
+#   - 管理端后台  http://localhost:5173  （admin / 123456）
+#   - 用户端 H5   http://localhost:5174  （user1 / 123456）
+#   - 接口文档    http://localhost:8080/doc.html
+# 首次启动 MySQL 会自动执行 sql/ 下的建库建表与演示数据脚本
 services:
   mysql:
     image: mysql:8.0
@@ -20,6 +23,12 @@ services:
       - ./sql/community_fresh.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
       - ./sql/demo-data.sql:/docker-entrypoint-initdb.d/02-demo.sql:ro
       - ./sql/demo-data2.sql:/docker-entrypoint-initdb.d/03-demo2.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p123456"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   redis:
     image: redis:7-alpine
@@ -29,6 +38,46 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+
+  fresh-server:
+    build: ./fresh-server
+    container_name: fresh-server
+    restart: always
+    environment:
+      # 覆盖 application.yml 中的本机地址为容器网络地址
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/community_fresh?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "123456"
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    volumes:
+      # 商品图片：宿主机 upload/ 挂载到容器工作目录（application.yml upload-path: ./upload/）
+      - ./upload:/app/upload
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8080:8080"
+
+  fresh-admin:
+    build: ./fresh-admin
+    container_name: fresh-admin
+    restart: always
+    depends_on:
+      - fresh-server
+    ports:
+      - "5173:80"
+
+  fresh-user:
+    build: ./fresh-user
+    container_name: fresh-user
+    restart: always
+    depends_on:
+      - fresh-server
+    ports:
+      - "5174:80"
 
 volumes:
   mysql-data:
