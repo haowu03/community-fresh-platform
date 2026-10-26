@@ -3,6 +3,10 @@
 -- MySQL 8.0+ / utf8mb4 / InnoDB
 -- =====================================================================
 
+-- 强制本连接字符集为 utf8mb4：官方镜像 init 入口以 latin1 连接导入，
+-- 不加此句中文会被双重编码成乱码
+SET NAMES utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS community_fresh DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE community_fresh;
 
