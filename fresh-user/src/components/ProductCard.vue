@@ -79,31 +79,33 @@ defineEmits(['click'])
 .weight-badge {
   position: absolute;
   left: 0;
-  top: 8px;
+  top: 7px;
   background: linear-gradient(90deg, #e9a13b, #d8402b);
   color: #fff;
-  font-size: 9px;
+  font-size: 8px;
   line-height: 1;
-  padding: 3px 7px 3px 5px;
+  padding: 2px 6px 2px 4px;
   border-radius: 0 3px 3px 0;
   letter-spacing: 1px;
 }
 .presale-stamp {
   position: absolute;
-  right: 8px;
-  top: 8px;
+  right: 7px;
+  top: 7px;
   transform: rotate(8deg);
   color: var(--green-ink, #1e4d35);
-  border: 1.5px solid var(--green-ink, #1e4d35);
-  border-radius: 4px;
-  font-size: 10px;
+  border: 1.2px solid var(--green-ink, #1e4d35);
+  border-radius: 3px;
+  font-size: 9px;
   font-family: var(--font-kai, serif);
-  padding: 1px 5px;
+  padding: 1px 4px;
   background: rgba(247, 243, 234, 0.8);
   letter-spacing: 2px;
 }
+
+/* 信息区：宽屏四列下的紧凑比例 */
 .info {
-  padding: 8px 10px 10px;
+  padding: 7px 9px 9px;
   border-top: 1px dashed rgba(30, 77, 53, 0.2);
   position: relative;
 }
@@ -112,9 +114,9 @@ defineEmits(['click'])
 .info::after {
   content: '';
   position: absolute;
-  top: -6.5px;
-  width: 12px;
-  height: 12px;
+  top: -5.5px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--paper, #f7f3ea);
   border: 1px solid rgba(30, 77, 53, 0.16);
@@ -130,7 +132,7 @@ defineEmits(['click'])
   transform: rotate(225deg);
 }
 .name {
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--ink, #2b2c26);
   overflow: hidden;
@@ -141,11 +143,11 @@ defineEmits(['click'])
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 5px 0 3px;
+  margin: 4px 0 2px;
   gap: 6px;
 }
 .origin {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--green-moss, #4c7b58);
   display: inline-flex;
   align-items: center;
@@ -155,16 +157,16 @@ defineEmits(['click'])
   text-overflow: ellipsis;
 }
 .origin .dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--green-sprout, #8fae92);
   flex-shrink: 0;
 }
 .fresh-tag {
   flex-shrink: 0;
-  font-size: 10px;
-  padding: 1px 7px;
+  font-size: 9px;
+  padding: 1px 6px;
   border-radius: 3px;
   letter-spacing: 1px;
 }
@@ -186,18 +188,69 @@ defineEmits(['click'])
   justify-content: space-between;
 }
 .price {
-  font-size: 18px;
+  font-size: 17px;
 }
 .unit {
-  font-size: 11px;
+  font-size: 10px;
   color: #a3a69a;
   font-weight: 400;
   font-style: normal;
   font-family: var(--font-body);
+  margin-left: 1px;
 }
 .sales {
-  font-size: 11px;
+  font-size: 10px;
   color: #a3a69a;
   letter-spacing: 0.5px;
+}
+
+/* 手机窄屏（两列）：恢复更宽松的比例 */
+@media (max-width: 719px) {
+  .info {
+    padding: 8px 10px 10px;
+  }
+  .info::before,
+  .info::after {
+    top: -6.5px;
+    width: 12px;
+    height: 12px;
+  }
+  .name {
+    font-size: 15px;
+  }
+  .meta-row {
+    margin: 5px 0 3px;
+  }
+  .origin {
+    font-size: 11px;
+  }
+  .origin .dot {
+    width: 5px;
+    height: 5px;
+  }
+  .fresh-tag {
+    font-size: 10px;
+    padding: 1px 7px;
+  }
+  .weight-badge {
+    font-size: 9px;
+    top: 8px;
+    padding: 3px 7px 3px 5px;
+  }
+  .presale-stamp {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-width: 1.5px;
+    border-radius: 4px;
+  }
+  .price {
+    font-size: 18px;
+  }
+  .unit {
+    font-size: 11px;
+  }
+  .sales {
+    font-size: 11px;
+  }
 }
 </style>
