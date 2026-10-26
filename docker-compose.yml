@@ -22,6 +22,7 @@ services:
       - ./sql/community_fresh.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
       - ./sql/demo-data.sql:/docker-entrypoint-initdb.d/02-demo.sql:ro
       - ./sql/demo-data2.sql:/docker-entrypoint-initdb.d/03-demo2.sql:ro
+      - ./sql/demo-data3.sql:/docker-entrypoint-initdb.d/04-demo3.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p123456"]
       interval: 10s

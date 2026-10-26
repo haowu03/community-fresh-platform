@@ -67,7 +67,7 @@ community-fresh-platform/
 ├── fresh-server/          # 后端（Spring Boot 3，模块化：user/product/order/presale/groupbuy/...）
 ├── fresh-admin/           # 管理端 PC 后台（Vue3 + Element Plus + ECharts）
 ├── fresh-user/            # 用户端移动 H5（Vue3 + Vant4）
-├── sql/                   # 20 张表 DDL + 演示数据（商品/批次/预售/团购/订单）
+├── sql/                   # 20 张表 DDL + 三批演示数据（商品/批次/订单/团购/预售/帖子/评价）
 ├── upload/                # 商品演示图片
 ├── docs/                  # 需求 / 业务流程 / 数据库 / 接口 / 运行指南
 ├── docker-compose.yml     # 全链路一键部署（MySQL + Redis + 三端应用）
@@ -99,6 +99,7 @@ docker compose up -d --build
 mysql -uroot -p123456 < sql/community_fresh.sql
 mysql -uroot -p123456 community_fresh < sql/demo-data.sql
 mysql -uroot -p123456 community_fresh < sql/demo-data2.sql
+mysql -uroot -p123456 community_fresh < sql/demo-data3.sql
 
 # 2. 启动后端（IDEA 运行 com.fresh.FreshApplication，端口 8080）
 #    数据库/Redis 连接在 fresh-server/src/main/resources/application.yml 中修改
