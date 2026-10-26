@@ -13,10 +13,25 @@
 
 <script setup>
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useCartStore } from '../../stores/cart'
+import { useUserStore } from '../../stores/user'
 
+const router = useRouter()
 const cart = useCartStore()
-onMounted(() => cart.refresh())
+const user = useUserStore()
+
+onMounted(async () => {
+  cart.refresh()
+  // 强制登录校验：有 token 则向服务端验证有效性，失败立即登出回登录页
+  if (!user.token) return
+  try {
+    await user.fetchInfo()
+  } catch (e) {
+    user.logout()
+    router.replace('/login')
+  }
+})
 </script>
 
 <style scoped>

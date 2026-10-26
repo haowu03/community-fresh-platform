@@ -49,9 +49,9 @@ body {
   color: var(--ink);
 }
 
-/* ---------- 手机画布 ---------- */
+/* ---------- 手机画布（桌面宽屏演示：960px，两倍手机宽） ---------- */
 #app {
-  max-width: 480px;
+  max-width: 960px;
   margin: 0 auto;
   min-height: 100vh;
   background:
@@ -71,7 +71,7 @@ body {
   right: auto !important;
   translate: -50% 0;
   width: 100%;
-  max-width: 480px;
+  max-width: 960px;
 }
 
 /* ---------- 页面通用 ---------- */

@@ -286,12 +286,22 @@ onMounted(async () => {
   background: linear-gradient(90deg, var(--tomato, #d8402b), var(--yellow-ochre, #e9a13b));
 }
 
-/* ---------- 商品网格：逐卡浮现 ---------- */
+/* ---------- 商品网格：逐卡浮现（宽屏自适应增加列数） ---------- */
 .prod-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   padding: 10px 12px 12px;
+}
+@media (min-width: 720px) {
+  .prod-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 880px) {
+  .prod-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 .grid-item {
   animation: riseIn 0.5s cubic-bezier(0.22, 0.8, 0.36, 1) both;
