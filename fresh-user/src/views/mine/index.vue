@@ -6,7 +6,7 @@
       <van-uploader :after-read="onAvatarChange" accept="image/*" max-count="1">
         <div class="avatar-wrap">
           <van-image v-if="user.userInfo && user.userInfo.avatar" :src="imgUrl(user.userInfo.avatar)" width="64" height="64" round fit="cover" />
-          <van-icon v-else name="manager" size="64" color="#fff" />
+          <van-icon v-else name="manager" size="52" />
           <span class="avatar-edit"><van-icon name="photograph" size="12" /></span>
         </div>
       </van-uploader>
@@ -23,19 +23,19 @@
     <!-- 功能宫格 -->
     <div class="grid-card">
       <div class="grid-item" @click="$router.push('/order')">
-        <van-icon name="orders-o" size="26" color="#39b57f" />
+        <van-icon name="orders-o" size="24" class="gi-1" />
         <span>我的订单</span>
       </div>
       <div class="grid-item" @click="$router.push('/address')">
-        <van-icon name="location-o" size="26" color="#ff7a45" />
+        <van-icon name="location-o" size="24" class="gi-2" />
         <span>地址管理</span>
       </div>
       <div class="grid-item" @click="$router.push('/myPosts')">
-        <van-icon name="edit" size="26" color="#5b7fff" />
+        <van-icon name="edit" size="24" class="gi-3" />
         <span>我的帖子</span>
       </div>
       <div class="grid-item" @click="$router.push('/myJoin')">
-        <van-icon name="friends-o" size="26" color="#a85cf9" />
+        <van-icon name="friends-o" size="24" class="gi-4" />
         <span>我的参团</span>
       </div>
     </div>
@@ -145,23 +145,41 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* ---------- 用户卡：手账信息页 ---------- */
 .user-card {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 32px 20px 40px;
-  background: linear-gradient(135deg, #39b57f, #27a06c);
-  border-radius: 0 0 20px 20px;
-  color: #fff;
+  margin: 14px 12px 0;
+  padding: 20px 16px 26px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(30, 77, 53, 0.16);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.user-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--green-ink, #1e4d35), var(--green-sprout, #8fae92));
 }
 .avatar-wrap {
   position: relative;
   width: 64px;
   height: 64px;
+  background: var(--paper-deep, #f0e9db);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green-moss, #4c7b58);
 }
-.user-card :deep(.van-image),
-.user-card .van-icon.manager {
-  border: 2px solid rgba(255, 255, 255, 0.6);
+.user-card :deep(.van-image) {
+  border: 2px solid rgba(30, 77, 53, 0.3);
   border-radius: 50%;
 }
 .avatar-edit {
@@ -171,8 +189,8 @@ onMounted(async () => {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #fff;
-  color: #27a06c;
+  background: var(--green-ink, #1e4d35);
+  color: var(--paper, #f7f3ea);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,8 +201,11 @@ onMounted(async () => {
   min-width: 0;
 }
 .name {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
+  font-family: var(--font-kai, serif);
+  letter-spacing: 0.08em;
+  color: var(--green-ink, #1e4d35);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -194,18 +215,19 @@ onMounted(async () => {
 }
 .username {
   font-size: 12px;
-  opacity: 0.85;
-  margin-top: 4px;
+  color: var(--ink-soft, #6f7267);
+  margin-top: 5px;
+  letter-spacing: 0.05em;
 }
 
-/* 功能宫格：悬浮卡片压在渐变 header 上 */
+/* ---------- 功能宫格：票据卡 ---------- */
 .grid-card {
   display: flex;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(30, 77, 53, 0.16);
   border-radius: 12px;
-  margin: -24px 12px 0;
-  padding: 16px 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin: 12px 12px 0;
+  padding: 14px 0;
   position: relative;
   z-index: 1;
 }
@@ -216,25 +238,71 @@ onMounted(async () => {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #333;
+  color: var(--ink, #2b2c26);
+  position: relative;
+}
+.grid-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  border-right: 1px dashed rgba(30, 77, 53, 0.2);
 }
 .grid-item:active {
   opacity: 0.6;
+}
+.gi-1 {
+  color: var(--green-ink, #1e4d35);
+}
+.gi-2 {
+  color: var(--yellow-ochre, #e9a13b);
+}
+.gi-3 {
+  color: var(--green-moss, #4c7b58);
+}
+.gi-4 {
+  color: var(--tomato, #d8402b);
 }
 
 .group {
   margin-top: 12px;
 }
+:deep(.van-cell-group) {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(30, 77, 53, 0.16);
+  border-radius: 12px;
+  overflow: hidden;
+}
+:deep(.van-cell-group__title) {
+  font-family: var(--font-kai, serif);
+  color: var(--green-ink, #1e4d35);
+  letter-spacing: 0.15em;
+  font-weight: 700;
+}
+:deep(.van-cell) {
+  background: transparent;
+  align-items: center;
+}
+:deep(.van-cell__title) {
+  letter-spacing: 0.06em;
+}
 .badge {
   margin-right: 6px;
 }
 .logout {
-  padding: 24px 16px;
+  padding: 26px 16px;
+}
+.logout :deep(.van-button) {
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  font-family: var(--font-kai, serif);
 }
 .name-field {
   margin: 12px 16px;
   width: auto;
-  background: #f5f6f8;
+  background: var(--paper-deep, #f0e9db);
   border-radius: 8px;
 }
 </style>

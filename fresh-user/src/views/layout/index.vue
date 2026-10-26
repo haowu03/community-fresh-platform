@@ -18,3 +18,22 @@ import { useCartStore } from '../../stores/cart'
 const cart = useCartStore()
 onMounted(() => cart.refresh())
 </script>
+
+<style scoped>
+:deep(.van-tabbar) {
+  height: 54px;
+  background: rgba(247, 243, 234, 0.96);
+  backdrop-filter: blur(8px);
+}
+:deep(.van-tabbar::before) {
+  border-top: 1px dashed rgba(30, 77, 53, 0.18) !important;
+}
+:deep(.van-tabbar-item--active .van-tabbar-item__text) {
+  font-family: var(--font-kai, serif);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+:deep(.van-tabbar-item__text) {
+  font-size: 11px;
+}
+</style>

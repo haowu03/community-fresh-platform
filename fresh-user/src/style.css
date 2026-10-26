@@ -1,33 +1,67 @@
-/* 全局样式 */
+/* ============================================================
+   菜市手账 · 全局样式（Farmstand Journal）
+   纸张底 + 墨绿主色 + 番茄红价格 + 楷体标题 + 票据细节
+   ============================================================ */
 
-/* 主题色：生鲜绿（覆盖 Vant CSS 变量） */
+/* ---------- 主题变量：覆盖 Vant ---------- */
 :root {
-  --van-primary-color: #39b57f;
-  --van-success-color: #39b57f;
-  --van-nav-bar-icon-color: #39b57f;
-  --van-tabbar-item-active-color: #39b57f;
+  --paper: #f7f3ea;            /* 纸张米白 */
+  --paper-deep: #f0e9db;      /* 纸张阴影面 */
+  --ink: #2b2c26;             /* 墨色文字 */
+  --ink-soft: #6f7267;        /* 次级文字 */
+  --green-ink: #1e4d35;       /* 墨绿主色 */
+  --green-moss: #4c7b58;      /* 苔绿 */
+  --green-sprout: #8fae92;    /* 芽绿 */
+  --tomato: #d8402b;          /* 番茄红（价格/强调） */
+  --yellow-ochre: #e9a13b;    /* 姜黄（点缀） */
+  --hairline: rgba(30, 77, 53, 0.16);
+
+  --van-primary-color: var(--green-ink);
+  --van-success-color: var(--green-moss);
+  --van-danger-color: var(--tomato);
+  --van-warning-color: var(--yellow-ochre);
+  --van-text-color: var(--ink);
+  --van-text-color-2: var(--ink-soft);
+  --van-background: var(--paper);
+  --van-background-2: var(--paper-deep);
+  --van-nav-bar-icon-color: var(--green-ink);
+  --van-nav-bar-title-text-color: var(--green-ink);
+  --van-nav-bar-background: transparent;
+  --van-tabbar-background: var(--paper);
+  --van-tabbar-item-text-color: #9a9d92;
+  --van-tabbar-item-active-color: var(--green-ink);
   --van-tabbar-item-active-background: transparent;
+  --van-search-background: rgba(255, 255, 255, 0.72);
+  --van-border-color: var(--hairline);
+}
+
+/* ---------- 字体 ---------- */
+:root {
+  --font-kai: 'KaiTi', 'STKaiti', 'Kaiti SC', 'FangSong', 'SimSun', serif;
+  --font-body: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
 }
 
 body {
   margin: 0;
-  /* 桌面端外层深灰背景，衬托中间"手机"容器 */
-  background: #e8eaee;
+  background: #d9d5c9;                     /* 桌面端外层：旧木桌灰 */
   overflow-x: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, sans-serif;
+  font-family: var(--font-body);
+  color: var(--ink);
 }
 
-/* 桌面端容器约束：手机 App 跑在网页里的效果 */
+/* ---------- 手机画布 ---------- */
 #app {
   max-width: 480px;
   margin: 0 auto;
   min-height: 100vh;
-  background: #f5f6f8;
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.12);
+  background:
+    radial-gradient(rgba(30, 77, 53, 0.045) 1px, transparent 1.2px) 0 0 / 20px 20px,
+    var(--paper);
+  box-shadow: 0 0 32px rgba(40, 36, 20, 0.28);
   position: relative;
 }
 
-/* fixed 定位元素同步约束宽度（translate 属性独立于 transform，不影响弹层动画） */
+/* fixed 弹层同步约束宽度 */
 .van-tabbar,
 .van-nav-bar--fixed,
 .van-submit-bar,
@@ -40,61 +74,122 @@ body {
   max-width: 480px;
 }
 
+/* ---------- 页面通用 ---------- */
 .page {
   min-height: 100vh;
-  background: #f5f6f8;
+  background:
+    radial-gradient(rgba(30, 77, 53, 0.04) 1px, transparent 1.2px) 0 0 / 22px 22px,
+    var(--paper);
 }
 
-/* 价格通用样式 */
+/* 楷体展示标题 */
+.kai {
+  font-family: var(--font-kai);
+  letter-spacing: 0.06em;
+}
+
+/* ---------- 价格 ---------- */
 .price {
-  color: #ee0a24;
-  font-weight: bold;
+  color: var(--tomato);
+  font-family: var(--font-kai);
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
-
 .price-del {
-  color: #999;
+  color: #a3a69a;
   font-size: 12px;
   text-decoration: line-through;
   margin-left: 4px;
+  font-family: var(--font-body);
+  font-weight: 400;
 }
 
-/* 卡片通用：统一圆角 + 轻阴影 */
+/* ---------- 卡片：票据风 ---------- */
 .card {
-  background: #fff;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
   margin: 10px 12px;
   padding: 12px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 10px rgba(43, 44, 38, 0.06);
+  position: relative;
 }
 
-/* 区块小标题：绿色竖条 */
+/* ---------- 区块小标题：手账风 ---------- */
 .sec-title {
   position: relative;
-  padding-left: 10px;
-  font-size: 15px;
-  font-weight: 600;
+  padding-left: 14px;
+  font-family: var(--font-kai);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--green-ink);
   margin-bottom: 8px;
 }
 .sec-title::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 3px;
-  bottom: 3px;
-  width: 4px;
+  left: 2px;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
   border-radius: 2px;
-  background: linear-gradient(180deg, #39b57f, #27a06c);
+  background: linear-gradient(180deg, var(--tomato), var(--yellow-ochre));
 }
 
-/* 多行省略 */
+/* 虚线分隔（票据撕线） */
+.dash-line {
+  border: none;
+  border-top: 1px dashed var(--hairline);
+  margin: 8px 0;
+}
+
+/* ---------- 工具类 ---------- */
 .ellipsis-2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
-
-/* 底部操作区占位 */
 .bottom-placeholder {
-  height: 60px;
+  height: 64px;
+}
+
+/* ---------- 入场动画 ---------- */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise-in {
+  animation: riseIn 0.45s cubic-bezier(0.22, 0.8, 0.36, 1) both;
+}
+
+/* ---------- Vant 细节微调 ---------- */
+.van-nav-bar::after {
+  border-bottom: 1px dashed var(--hairline) !important;
+}
+.van-nav-bar__title {
+  font-family: var(--font-kai);
+  font-size: 17px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+.van-tabbar::before {
+  right: 0;
+  border-top: 1px solid var(--hairline);
+}
+.van-tabbar-item__icon {
+  margin-bottom: 2px;
+}
+.van-tag {
+  font-family: var(--font-body);
+}
+.van-button--primary {
+  letter-spacing: 0.1em;
 }
